@@ -107,7 +107,9 @@ export default {
   methods: {
     async fetchData() {
       this.resetRanges(500000, 10000)
-      const res = await fetch(`./data/${this.project}_graph.json`)
+      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
+        mode: 'cors'
+      })
       this.graphData = await res.json()
       const viewsMax = Math.max.apply(Math, this.graphData.pages.map(page => page.views))
       const linkedMax = Math.max.apply(Math, this.graphData.pages.map(page => page.linked))
