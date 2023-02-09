@@ -2,6 +2,12 @@
   <svg id="svg" />
 </template>
 
+<script setup>
+  const props = defineProps({
+    project: String,
+  })
+</script>
+
 <script>
 import * as d3 from 'd3'
 
@@ -60,13 +66,10 @@ export default {
   },
   data: () => ({
     graphData: [],
-    projects: ['help-jp', 'comic-forum', 'icons'],
-    project: '',
     width: 0,
     height: 0
   }),
   async mounted () {
-    this.project = this.projects[0]
     this.width = document.querySelector('svg').clientWidth
     this.height = document.querySelector('svg').clientHeight
     await this.fetchData()
@@ -74,7 +77,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
+      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${encodeURIComponent(this.project)}_graph.json`, {
         mode: 'cors'
       })
       this.graphData = await res.json()
@@ -196,7 +199,7 @@ export default {
       console.log(d)
       if (d.user) return
       const page = encodeURIComponent(d.title)
-      const url = `https://scrapbox.io/${this.project}/${page}`
+      const url = `https://scrapbox.io/${encodeURIComponent(this.project)}/${page}`
       window.open(url)
     }
   }
@@ -205,7 +208,6 @@ export default {
 
 <style scoped>
   svg {
-    background: white;
     position: fixed;
     top: 50px;
     left: 0;

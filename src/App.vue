@@ -6,7 +6,7 @@
 <template>
   <div>
     <Header />
-    <Graph />
+    <Graph project="help-jp"/>
   </div>
 </template>
 
