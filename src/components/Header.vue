@@ -1,6 +1,11 @@
 <template>
   <header>
     <h2>{{ title }}</h2>
+    <select v-model="project">
+      <option>help-jp</option>
+      <option>icons</option>
+      <option>comic-forum</option>
+    </select>
   </header>
 </template>
 
@@ -9,7 +14,8 @@
     name: "Header",
     data() {
       return {
-        title: 'Scrapbox graph'
+        title: 'Scrapbox graph',
+        project: 'help-jp'
       }
     }
   }
@@ -17,11 +23,11 @@
 
 <style scoped>
 header {
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height: 50;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 50px;
 }
 
 h2 {
@@ -29,5 +35,12 @@ h2 {
   margin-left: 1em;
   color: #000;
   text-align: left;
+}
+
+select {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  margin: 1em;
 }
 </style>

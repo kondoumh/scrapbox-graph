@@ -71,7 +71,7 @@ export default {
   data: () => ({
     graphData: [],
     showAuthor: true,
-    projects: ['kondoumh', 'help-jp', 'comic-forum', 'icons'],
+    projects: ['help-jp', 'comic-forum', 'icons'],
     project: '',
     width: 0,
     height: 0,
