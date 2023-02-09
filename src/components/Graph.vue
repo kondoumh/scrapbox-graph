@@ -1,5 +1,5 @@
 <template>
-  <svg id="svg"/>
+  <svg id="svg" />
 </template>
 
 <script>
@@ -249,36 +249,13 @@ export default {
 }
 </script>
 
-<style>
-  .selected {
-    fill: tomato;
-  }
-
-  .linkSelected {
-    stroke: tomato;
-  }
-
-  .conected {
-    fill: orange;
-  }
-
-  .toolbox {
-    padding: 3px;
-    background-color:darkkhaki
-  }
-
-  html, body {
-    margin:0;
-    padding:0;
-    overflow:hidden
-  }
-
+<style scoped>
   svg {
     background: white;
-    position:fixed;
-    top:30px;
-    left:0;
-    height:100%;
-    width:100%
+    position: fixed;
+    top: 50px;
+    left: 0;
+    height: 100%;
+    width: 100%
   }
 </style>
