@@ -10,12 +10,6 @@ export default {
   computed: {
     nodes() {
       let nodes = this.graphData.pages
-      .filter(page => {
-        return page.views >= this.views.range[0]
-          && page.views <= this.views.range[1]
-          && page.linked >= this.linked.range[0]
-          && page.linked <= this.linked.range[1]
-      })
       .map(page =>
       ({
         id: page.id,
@@ -27,18 +21,16 @@ export default {
         user: false
       }))
 
-      if (this.showAuthor) {
-        const users = this.graphData.users.map(user => ({
-          id: user.id,
-          title: user.name,
-          x: this.width * Math.random(),
-          y: this.height * Math.random(),
-          rx: this.byteLength(user.name),
-          ry: 10,
-          user: true
-        }))
-        nodes = nodes.concat(users)
-      }
+      const users = this.graphData.users.map(user => ({
+        id: user.id,
+        title: user.name,
+        x: this.width * Math.random(),
+        y: this.height * Math.random(),
+        rx: this.byteLength(user.name),
+        ry: 10,
+        user: true
+      }))
+      nodes = nodes.concat(users)
       return nodes
     },
     edges() {
@@ -54,37 +46,24 @@ export default {
           l: Math.random() * 150
         }))
 
-      if (this.showAuthor) {
-        const userPages = this.graphData.userPages
-          .filter(up => ids.has(up.user) && ids.has(up.page))
-          .map(up =>
-          ({
-            source: idm[up.user],
-            target: idm[up.page],
-            l: Math.random() * 300
-          })) 
-        edges = edges.concat(userPages)
-      }
+      const userPages = this.graphData.userPages
+        .filter(up => ids.has(up.user) && ids.has(up.page))
+        .map(up =>
+        ({
+          source: idm[up.user],
+          target: idm[up.page],
+          l: Math.random() * 300
+        })) 
+      edges = edges.concat(userPages)
       return edges
     }
   },
   data: () => ({
     graphData: [],
-    showAuthor: true,
     projects: ['help-jp', 'comic-forum', 'icons'],
     project: '',
     width: 0,
-    height: 0,
-    linked: {
-      min: 0,
-      max: 10000,
-      range: [0, 10000],
-    },
-    views: {
-      min: 0,
-      max: 500000,
-      range: [0, 500000],
-    }
+    height: 0
   }),
   async mounted () {
     this.project = this.projects[0]
@@ -93,37 +72,12 @@ export default {
     await this.fetchData()
     await this.render()
   },
-  watch: {
-    showAuthor: 'render',
-    project: {
-      handler: async function() {
-        await this.fetchData()
-        await this.render()
-      }
-    },
-    'views.range': 'render',
-    'linked.range': 'render'
-  },
   methods: {
     async fetchData() {
-      this.resetRanges(500000, 10000)
       const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
         mode: 'cors'
       })
       this.graphData = await res.json()
-      const viewsMax = Math.max.apply(Math, this.graphData.pages.map(page => page.views))
-      const linkedMax = Math.max.apply(Math, this.graphData.pages.map(page => page.linked))
-      this.resetRanges(viewsMax, linkedMax)
-    },
-    resetRanges(viewsMax, linkedMax) {
-      this.views.range[0] = 0
-      this.views.range[1] = viewsMax
-      this.linked.range[0] = 0
-      this.linked.range[1] = linkedMax
-      this.views.max = viewsMax
-      this.linked.max = linkedMax
-      this.views.min = 0
-      this.linked.min = 0
     },
     async render() {
       d3.select('svg').selectAll('*').remove()
