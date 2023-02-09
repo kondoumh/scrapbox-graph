@@ -33,7 +33,6 @@ header {
 h2 {
   margin: 0;
   margin-left: 1em;
-  color: #000;
   text-align: left;
 }
 
