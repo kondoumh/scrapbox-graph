@@ -107,9 +107,7 @@ export default {
   methods: {
     async fetchData() {
       this.resetRanges(500000, 10000)
-      const res = await fetch(`/data/${this.project}_graph.json`, {
-        mode: 'cors'
-      })
+      const res = await fetch(`./data/${this.project}_graph.json`)
       this.graphData = await res.json()
       const viewsMax = Math.max.apply(Math, this.graphData.pages.map(page => page.views))
       const linkedMax = Math.max.apply(Math, this.graphData.pages.map(page => page.linked))
