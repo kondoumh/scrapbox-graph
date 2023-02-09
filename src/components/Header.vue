@@ -10,9 +10,9 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  const title = 'Scrapbox graph'
-  const project = ref('help-jp')
+  import { ref } from 'vue';
+  const title = 'Scrapbox graph';
+  const project = ref('help-jp');
 </script>
 
 <style scoped>
