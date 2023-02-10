@@ -65,7 +65,7 @@
       return edges;
   });
 
-  onMounted( async () => {
+  onMounted(async () => {
     width.value = document.querySelector('svg').clientWidth;
     height.value = document.querySelector('svg').clientHeight;
     await fetchData();
@@ -81,11 +81,14 @@
   };
 
   const render = async () => {
-    // d3.select('svg').selectAll('*').remove();
+    d3.select('svg').selectAll('*').remove();
 
     const zoom = d3.zoom()
       .scaleExtent([1/3, 40])
-      .on('zoom', zoomed);
+      .on('zoom', (e, d) => {
+        link.attr('transform', e.transform);
+        nodeGroup.attr('transform', e.transform);
+      });
 
     d3.select('svg')
       .attr('viewBox', '0 0 1200 1400')
@@ -106,10 +109,26 @@
       .enter()
       .append('g')
       .call(d3.drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended))
-      .on('click', openPage);
+        .on('start', (e, d) => {
+          if (!e.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+        .on('drag', (e, d) => {
+          d.fx = e.x;
+          d.fy = e.y;
+        })
+        .on('end', (e, d) => {
+          if (!e.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        }))
+      .on('click', (e, d) => {
+        if (d.user) return;
+        const page = encodeURIComponent(d.title);
+        const url = `https://scrapbox.io/${encodeURIComponent(props.project)}/${page}`;
+        window.open(url);        
+      });
 
     nodeGroup.append('ellipse')
       .attr('cx', d => d.x)
@@ -144,63 +163,31 @@
 
     simulation
       .nodes(nodes.value)
-      .on('tick', ticked);
+      .on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+        nodeGroup.select('ellipse')
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y);
+        nodeGroup.select('text')
+          .attr('x', d => d.x)
+          .attr('y', d => d.y);
+      });
 
     simulation.force('link')
       .links(edges.value)
       .id(d => d.index);
 
-    function ticked() {
-      link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-      nodeGroup.select('ellipse')
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
-      nodeGroup.select('text')
-        .attr('x', d => d.x)
-        .attr('y', d => d.y);
-    }
-
-    function dragstarted(e, d) {
-      if (!e.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-
-    function dragged(e, d) {
-      d.fx = e.x;
-      d.fy = e.y;
-    }
-
-    function dragended(e, d) {
-      if (!e.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
-
-    link.call(zoom)
-    nodeGroup.call(zoom)
-
-    function zoomed(e, d) {
-      link.attr('transform', e.transform);
-      nodeGroup.attr('transform', e.transform);
-    }
+    link.call(zoom);
+    nodeGroup.call(zoom);
   };
 
   const byteLength = (str) => {
     str = (str==null) ? "" : str;
     return encodeURI(str).replace(/%../g, "*").length;
-  };
-
-  const openPage = (e, d) => {
-    console.log(d);
-    if (d.user) return;
-    const page = encodeURIComponent(d.title);
-    const url = `https://scrapbox.io/${encodeURIComponent(props.project)}/${page}`;
-    window.open(url);
   };
 
 </script>
