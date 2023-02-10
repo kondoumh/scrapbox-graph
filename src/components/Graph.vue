@@ -16,8 +16,7 @@
 
   const nodes = computed(() => {
     let nodes = graphData.value.pages
-      .map(page =>
-      ({
+      .map(page => ({
         id: page.id,
         title: page.title,
         x: width.value * Math.random(),
@@ -27,7 +26,8 @@
         user: false
       }));
 
-      const users = graphData.value.users.map(user => ({
+    const users = graphData.value.users
+      .map(user => ({
         id: user.id,
         title: user.name,
         x: width.value * Math.random(),
@@ -36,33 +36,31 @@
         ry: 10,
         user: true
       }));
-      nodes = nodes.concat(users);
-      return nodes;
+    nodes = nodes.concat(users);
+    return nodes;
   });
 
   const edges = computed(() => {
-    const ids = new Set(nodes.value.map(node => node.id))
-      const idm = new Map()
-      nodes.value.forEach((node, index) => {idm[node.id] = index})
-      let edges = graphData.value.links
-        .filter(edge => ids.has(edge.from) && ids.has(edge.to))
-        .map(edge =>
-        ({
-          source: idm[edge.from],
-          target: idm[edge.to],
-          l: Math.random() * 150
-        }));
+    const ids = new Set(nodes.value.map(node => node.id));
+    const idm = new Map();
+    nodes.value.forEach((node, index) => idm[node.id] = index);
+    let edges = graphData.value.links
+      .filter(edge => ids.has(edge.from) && ids.has(edge.to))
+      .map(edge => ({
+        source: idm[edge.from],
+        target: idm[edge.to],
+        l: Math.random() * 150
+      }));
 
-      const userPages = graphData.value.userPages
-        .filter(up => ids.has(up.user) && ids.has(up.page))
-        .map(up =>
-        ({
-          source: idm[up.user],
-          target: idm[up.page],
-          l: Math.random() * 300
-        }));
-      edges = edges.concat(userPages);
-      return edges;
+    const userPages = graphData.value.userPages
+      .filter(up => ids.has(up.user) && ids.has(up.page))
+      .map(up => ({
+        source: idm[up.user],
+        target: idm[up.page],
+        l: Math.random() * 300
+      }));
+    edges = edges.concat(userPages);
+    return edges;
   });
 
   onMounted(async () => {
@@ -189,7 +187,6 @@
     str = (str==null) ? "" : str;
     return encodeURI(str).replace(/%../g, "*").length;
   };
-
 </script>
 
 <style scoped>
