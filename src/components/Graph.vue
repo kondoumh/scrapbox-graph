@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-  import { computed, ref, onMounted } from 'vue';
+  import { computed, ref, onMounted, watch } from 'vue';
   import * as d3 from 'd3'
 
   const graphData = ref([]);
@@ -66,6 +66,11 @@
   onMounted(async () => {
     width.value = document.querySelector('svg').clientWidth;
     height.value = document.querySelector('svg').clientHeight;
+    await fetchData();
+    await render();
+  });
+
+  watch(() => props.project, async () => {
     await fetchData();
     await render();
   });

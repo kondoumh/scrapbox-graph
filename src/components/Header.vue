@@ -1,18 +1,21 @@
 <template>
   <header>
-    <h2>{{ title }}</h2>
-    <select v-model="project">
+    <h2>Scrapbox graph</h2>
+    <select v-model="project" @change="onChange">
       <option>help-jp</option>
-      <option>icons</option>
       <option>comic-forum</option>
+      <option>icons</option>
     </select>
   </header>
 </template>
 
 <script setup>
-  import { ref } from 'vue';
-  const title = 'Scrapbox graph';
+  import { defineEmits, ref } from 'vue';
   const project = ref('help-jp');
+  const emit = defineEmits(['projectChanged'])
+  const onChange = () => {
+    emit('projectChanged', project.value);
+  }
 </script>
 
 <style scoped>
